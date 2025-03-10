@@ -50,5 +50,5 @@ jobs:
           event_type: remote_release_trigger
           client_payload: |
             {
-              "version": "${{ steps.get-module-version.outputs.module-version }}"
+              "version": ${{ steps.get-module-version.outputs.module-version }}
             }
