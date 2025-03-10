@@ -1,0 +1,39 @@
+---
+
+name: Module release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        type: string
+        required: true
+        default: '1.0.0'
+  repository_dispatch:
+    types: [remote_release_trigger]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+    steps:
+      - name: "set version"
+        id: set-version
+        run: |
+          if [ "${{ github.event_name }}" ==  "repository_dispatch" ] && [ "${{ github.event.client_payload.version }}" != "" ]; then
+            echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_ENV
+            echo "version=${{ github.event.client_payload.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          fi
+  info:
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: "Info"
+        run: |
+          echo "Version [env]: ${env.version}"
+          echo "Version [out]: ${{ needs.release.outputs.version }}"

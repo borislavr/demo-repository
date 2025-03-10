@@ -1,0 +1,43 @@
+---
+
+name: Multi-module release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        type: string
+        required: true
+        default: '1.0.0'
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - module1
+          - module2
+          - module3
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: "Get module version"
+        id: get-module-version
+        run: |
+          echo "module-version=$(grep ${{ matrix.module }} ${GITHUB_WORKSPACE}/.github/.child-modules| cut -d ' ' -f 2 " >> $GITHUB_OUTPUT
+        shell: bash
+      - name: "Trigger release"
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository_owner }}/${{ matrix.module }}
+          event-type: remote_release_trigger
+          client-payload: |
+            {
+              "version": "${{ steps.get-module-version.outputs.module-version }}"
+            }
