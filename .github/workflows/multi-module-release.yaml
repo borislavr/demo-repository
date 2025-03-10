@@ -22,7 +22,7 @@ jobs:
       - name: "Get child modules"
         id: get-child-modules
         run: |
-          echo "modules=$(yq -c '.child_modules | map(.name)' ./.github/.child-modules.yaml)" >> $GITHUB_OUTPUT
+          echo "modules=$(jq -c '.child_modules | map(.name)' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
         shell: bash
   release:
     needs: get-child-modules
@@ -38,8 +38,8 @@ jobs:
       - name: "Get module version"
         id: get-module-version
         run: |
-          echo "module-version=$(yq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.yaml)"
-          echo "module-version=$(yq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.yaml)" >> $GITHUB_OUTPUT
+          echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)"
+          echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
         shell: bash
       - name: "Trigger release"
         uses: netcracker/qubership-workflow-hub/actions/custom-event@main
