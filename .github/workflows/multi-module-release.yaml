@@ -13,6 +13,8 @@ on:
 
 jobs:
   get-child-modules:
+    outputs:
+      modules: ${{ steps.get-child-modules.outputs.modules }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,7 +22,7 @@ jobs:
       - name: "Get child modules"
         id: get-child-modules
         run: |
-          echo "modules=$(yq '.child_modules[].name' ./.github/.child-modules.yaml)" >> $GITHUB_OUTPUT
+          echo "modules=$(yq -c '.child_modules | map(.name)' ./.github/.child-modules.yaml)" >> $GITHUB_OUTPUT
         shell: bash
   release:
     needs: get-child-modules
