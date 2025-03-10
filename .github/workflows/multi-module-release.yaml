@@ -32,12 +32,13 @@ jobs:
           echo "module-version=$(grep ${{ matrix.module }} ${GITHUB_WORKSPACE}/.github/.child-modules | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
         shell: bash
       - name: "Trigger release"
-        uses: peter-evans/repository-dispatch@v3
+        uses: netcracker/qubership-workflow-hub/actions/custom-event@main
         with:
-          token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
-          repository: ${{ github.repository_owner }}/${{ matrix.module }}
-          event-type: remote_release_trigger
-          client-payload: |
+          github-token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
+          repo: ${{ matrix.module }}
+          owner: ${{ github.repository_owner }}
+          event_type: remote_release_trigger
+          client_payload: |
             {
               "version": "${{ steps.get-module-version.outputs.module-version }}"
             }
