@@ -34,7 +34,7 @@ jobs:
       - name: "Trigger release"
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
           repository: ${{ github.repository_owner }}/${{ matrix.module }}
           event-type: remote_release_trigger
           client-payload: |
