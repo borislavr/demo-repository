@@ -12,7 +12,7 @@ on:
         default: '1.0.0'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   get-child-modules:
@@ -25,7 +25,7 @@ jobs:
       - name: "Get child modules"
         id: get-child-modules
         run: |
-          echo "modules=$(jq -c '.child_modules | map(.name)' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
+          echo "modules=$(yq eval -j '.child_modules | map(.name)' ./.github/.child-modules.yaml | jq -c)" >> $GITHUB_OUTPUT
         shell: bash
   release:
     needs: get-child-modules
@@ -41,8 +41,11 @@ jobs:
       - name: "Get module version"
         id: get-module-version
         run: |
-          echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)"
-          echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
+          module_version=$(yq eval -o=json '.child_modules | map(select(.name == "${{ matrix.module }}") | .version)' ./.github/.child-modules.yaml | jq -r '.[0]')
+          echo "module-version=$module_version"
+          echo "module-version=$module_version" >> $GITHUB_OUTPUT
+          # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)"
+          # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
         shell: bash
       - name: "Trigger release"
         uses: nookyo/qubership-workflow-hub/actions/custom-event@main
@@ -55,5 +58,5 @@ jobs:
             {
               "version": ${{ steps.get-module-version.outputs.module-version }}
             }
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
