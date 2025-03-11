@@ -52,3 +52,5 @@ jobs:
             {
               "version": ${{ steps.get-module-version.outputs.module-version }}
             }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
