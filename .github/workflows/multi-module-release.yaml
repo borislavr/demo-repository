@@ -42,7 +42,7 @@ jobs:
           echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
         shell: bash
       - name: "Trigger release"
-        uses: netcracker/qubership-workflow-hub/actions/custom-event@main
+        uses: nookyo/qubership-workflow-hub/actions/custom-event@main
         with:
           github-token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
           repo: ${{ matrix.module }}
