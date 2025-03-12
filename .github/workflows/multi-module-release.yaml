@@ -56,7 +56,7 @@ jobs:
           event-type: remote_release_trigger
           client-payload: |
             {
-              "version": ${{ steps.get-module-version.outputs.module-version }}
+              "version": "${{ steps.get-module-version.outputs.module-version }}"
             }
       - name: "Update module version"
         id: update-module-version
