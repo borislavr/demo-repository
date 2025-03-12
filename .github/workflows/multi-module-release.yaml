@@ -47,7 +47,7 @@ jobs:
           # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)"
           # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
         shell: bash
-      - name: "Trigger release"
+      - name: "Trigger module release"
         uses: nookyo/qubership-workflow-hub/actions/custom-event@main
         with:
           github-token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
@@ -58,5 +58,12 @@ jobs:
             {
               "version": ${{ steps.get-module-version.outputs.module-version }}
             }
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Update module version"
+        id: update-module-version
+        run: |
+          export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
+          export version=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version) | .[0]' ./.github/.child-modules.yaml)
+          export version_path=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
+          export module_string=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
+          yq eval -i ".${version_path} |= ${module_string}" ./${config_file}
+        shell: bash

@@ -1,0 +1,7 @@
+---
+module1:
+  image: registry:port/path/to/module1-image:tag
+module2:
+  image: registry:port/path/to/module2-image:tag
+module3:
+  image: registry:port/path/to/module3-image:tag
