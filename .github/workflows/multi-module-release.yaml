@@ -99,11 +99,12 @@ jobs:
           with open('./.github/.child-modules.yaml', 'r') as f:
               data = yaml.load(f)
               print(data)
-              with open(data['config_file'], 'w') as cf:
+              with open(data['config_file'], 'r') as cf:
                 configData = conf_yaml.load(cf)
                 for module in data['child_modules']:
-                    configData[module['version_path']] = module['module_string'].replace('${version}', module['version'])
-                conf_yaml.dump(configData, cf)
+                  configData[module['version_path']] = module['module_string'].replace('${version}', module['version'])
+                with open(data['config_file'], 'w') as cfw:
+                  conf_yaml.dump(configData, cfw)
                 sys.exit(0)
           sys.exit(1)
         shell: python
