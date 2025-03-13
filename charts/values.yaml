@@ -1095,7 +1095,7 @@ statusProvisioner:
 
 integrationTests:
   enabled: false
-  dockerImage: ghcr.io/netcracker/qubership-opensearch-integration-tests:main
+  dockerImage: ghcr.io/netcracker/qubership-opensearch-integration-tests:3.0.0
   statusWritingEnabled: true
   isShortStatusMessage: true
   secrets:
