@@ -76,6 +76,8 @@ jobs:
               "version": "${{ steps.get-module-version.outputs.module-version }}"
             }
   update-modules-versions:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -109,6 +111,16 @@ jobs:
           sys.exit(1)
         shell: python
 
+      - name: "Commit changes"
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git add .
+          git commit -m "Update modules versions"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         # - name: "Update module version"
         # id: update-module-version
         # run: |
