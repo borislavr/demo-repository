@@ -41,12 +41,29 @@ jobs:
       - name: "Get module version"
         id: get-module-version
         run: |
-          module_version=$(yq eval -o=json '.child_modules | map(select(.name == "${{ matrix.module }}") | .version)' ./.github/.child-modules.yaml | jq -r '.[0]')
-          echo "module-version=$module_version"
-          echo "module-version=$module_version" >> $GITHUB_OUTPUT
-          # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)"
-          # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
-        shell: bash
+          import os
+          import sys
+          import yaml
+
+          with open('./.github/.child-modules.yaml', 'r') as f:
+              data = yaml.safe_load(f)
+              for module in data['child_modules']:
+                  if module['name'] == ${{ matrix.module }}:
+                      print(f"module-version={module['version']}")
+                      print(f"module-version={module['version']}", file=open(os.getenv('GITHUB_OUTPUT'), 'a'))
+                      sys.exit(0)
+          sys.exit(1)
+        shell: python
+
+      # - name: "Get module version"
+      #   id: get-module-version
+      #   run: |
+      #     module_version=$(yq eval -o=json '.child_modules | map(select(.name == "${{ matrix.module }}") | .version)' ./.github/.child-modules.yaml | jq -r '.[0]')
+      #     echo "module-version=$module_version"
+      #     echo "module-version=$module_version" >> $GITHUB_OUTPUT
+      #     # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)"
+      #     # echo "module-version=$(jq '.child_modules[] | select(.name == "${{ matrix.module }}") | .version' ./.github/.child-modules.json)" >> $GITHUB_OUTPUT
+      #   shell: bash
       - name: "Trigger module release"
         uses: nookyo/qubership-workflow-hub/actions/custom-event@main
         with:
@@ -58,12 +75,43 @@ jobs:
             {
               "version": "${{ steps.get-module-version.outputs.module-version }}"
             }
+  update-modules-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: "Prepare python"
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U pip setuptools wheel
+          pip install ruamel.yaml
+
       - name: "Update module version"
         id: update-module-version
         run: |
-          export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
-          export version=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version) | .[0]' ./.github/.child-modules.yaml)
-          export version_path=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
-          export module_string=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
-          yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
-        shell: bash
+          import os
+          import sys
+          import ruamel.yaml
+
+          yaml = ruamel.yaml.YAML()
+          yaml.indent(mapping=2, sequence=4, offset=2)
+          with open('./.github/.child-modules.yaml', 'r') as f:
+              data = yaml.load(f)
+              with open('./' + data['config_file'], 'w') as cf:
+                configData = yaml.load(cf)
+                for module in data['child_modules']:
+                    configData[module['version_path']] = module['module_string'].replace('${version}', module['version'])
+                yaml.dump(configData, cf)
+                sys.exit(0)
+          sys.exit(1)
+        shell: python
+
+        # - name: "Update module version"
+        # id: update-module-version
+        # run: |
+        #   export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
+        #   export version=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version) | .[0]' ./.github/.child-modules.yaml)
+        #   export version_path=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
+        #   export module_string=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
+        #   yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
+        # shell: bash
