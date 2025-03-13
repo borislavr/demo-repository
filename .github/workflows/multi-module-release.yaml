@@ -48,7 +48,7 @@ jobs:
           with open('./.github/.child-modules.yaml', 'r') as f:
               data = yaml.safe_load(f)
               for module in data['child_modules']:
-                  if module['name'] == ${{ matrix.module }}:
+                  if module['name'] == '${{ matrix.module }}':
                       print(f"module-version={module['version']}")
                       print(f"module-version={module['version']}", file=open(os.getenv('GITHUB_OUTPUT'), 'a'))
                       sys.exit(0)
