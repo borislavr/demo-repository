@@ -107,6 +107,16 @@ jobs:
                 sys.exit(0)
           sys.exit(1)
         shell: python
+      - name: "Commit changes"
+        run: |
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+          git add .
+          git commit -m "Update modules versions"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
 
   # update-modules-versions:
   #   needs: [get-child-modules]
@@ -127,22 +137,12 @@ jobs:
   #         done
   #       shell: bash
 
-  #     - name: "Commit changes"
-  #       run: |
-  #         git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-  #         git config --global user.name "${GITHUB_ACTOR}"
-  #         git add .
-  #         git commit -m "Update modules versions"
-  #         git push
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       shell: bash
-  #       # - name: "Update module version"
-  #       # id: update-module-version
-  #       # run: |
-  #       #   export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
-  #       #   export version=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version) | .[0]' ./.github/.child-modules.yaml)
-  #       #   export version_path=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
-  #       #   export module_string=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
-  #       #   yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
-  #       # shell: bash
+        # - name: "Update module version"
+        # id: update-module-version
+        # run: |
+        #   export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
+        #   export version=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version) | .[0]' ./.github/.child-modules.yaml)
+        #   export version_path=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
+        #   export module_string=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
+        #   yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
+        # shell: bash
