@@ -75,77 +75,74 @@ jobs:
             {
               "version": "${{ steps.get-module-version.outputs.module-version }}"
             }
-  # update-modules-versions:
-  #   permissions:
-  #     contents: write
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: "Prepare python"
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install -U pip setuptools wheel
-  #         pip install ruamel.yaml
-
-  #     - name: "Update module version"
-  #       id: update-module-version
-  #       run: |
-  #         import os
-  #         import sys
-  #         import ruamel.yaml
-
-  #         yaml = ruamel.yaml.YAML()
-  #         conf_yaml = ruamel.yaml.YAML()
-  #         conf_yaml.indent(mapping=2, sequence=4, offset=2)
-  #         with open('./.github/.child-modules.yaml', 'r') as f:
-  #             data = yaml.load(f)
-  #             print(data)
-  #             with open(data['config_file'], 'r') as cf:
-  #               configData = conf_yaml.load(cf)
-  #               for module in data['child_modules']:
-  #                 configData[module['version_path']] = module['module_string'].replace('${version}', module['version'])
-  #               with open(data['config_file'], 'w') as cfw:
-  #                 conf_yaml.dump(configData, cfw)
-  #               sys.exit(0)
-  #         sys.exit(1)
-  #       shell: python
-
   update-modules-versions:
-    needs: [get-child-modules]
     permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: "Update modules versions"
-        run: |
-          export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
-          for module in ${{ fromJson(needs.get-child-modules.outputs.modules) }}; do
-            export version=$(yq eval '.child_modules | map(select(.name == "${module}") | .version) | .[0]' ./.github/.child-modules.yaml)
-            export version_path=$(yq eval '.child_modules | map(select(.name == "${module}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
-            export module_string=$(yq eval '.child_modules | map(select(.name == "${module}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
-            yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
-          done
-        shell: bash
+      # - name: "Prepare python"
+      #   run: |
+      #     python -m pip install --upgrade pip
+      #     pip install -U pip setuptools wheel
+      #     pip install ruamel.yaml
 
-      - name: "Commit changes"
+      - name: "Update module version"
+        id: update-module-version
         run: |
-          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          git config --global user.name "${GITHUB_ACTOR}"
-          git add .
-          git commit -m "Update modules versions"
-          git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        shell: bash
-        # - name: "Update module version"
-        # id: update-module-version
-        # run: |
-        #   export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
-        #   export version=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version) | .[0]' ./.github/.child-modules.yaml)
-        #   export version_path=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
-        #   export module_string=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
-        #   yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
-        # shell: bash
+          import os
+          import sys
+          import yaml
+          import re
+
+          with open('./.github/.child-modules.yaml', 'r') as f:
+              data = yaml.safe_load(f)
+              with open(data['config_file'], 'r') as cf:
+                configData = cf.read()
+                for module in data['child_modules']:
+                  configData = re.sub(rf"{module['module_string'].replace('${version}', '.*')}", f"{module['module_string'].replace('${version}', module['version'])}", configData)
+                with open(data['config_file'], 'w') as cfw:
+                  cfw.write(configData)
+                sys.exit(0)
+          sys.exit(1)
+        shell: python
+
+  # update-modules-versions:
+  #   needs: [get-child-modules]
+  #   permissions:
+  #     contents: write
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: "Update modules versions"
+  #       run: |
+  #         export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
+  #         for module in ${{ fromJson(needs.get-child-modules.outputs.modules) }}; do
+  #           export version=$(yq eval '.child_modules | map(select(.name == "${module}") | .version) | .[0]' ./.github/.child-modules.yaml)
+  #           export version_path=$(yq eval '.child_modules | map(select(.name == "${module}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
+  #           export module_string=$(yq eval '.child_modules | map(select(.name == "${module}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
+  #           yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
+  #         done
+  #       shell: bash
+
+  #     - name: "Commit changes"
+  #       run: |
+  #         git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+  #         git config --global user.name "${GITHUB_ACTOR}"
+  #         git add .
+  #         git commit -m "Update modules versions"
+  #         git push
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       shell: bash
+  #       # - name: "Update module version"
+  #       # id: update-module-version
+  #       # run: |
+  #       #   export config_file=$(yq eval '.config_file' ./.github/.child-modules.yaml)
+  #       #   export version=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version) | .[0]' ./.github/.child-modules.yaml)
+  #       #   export version_path=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .version_path) | .[0]' ./.github/.child-modules.yaml)
+  #       #   export module_string=$(yq eval '.child_modules | map(select(.name == "${{ matrix.module }}") | .module_string) | .[0]' ./.github/.child-modules.yaml)
+  #       #   yq eval -i ".${version_path} |= \"${module_string}\"" ./${config_file}
+  #       # shell: bash

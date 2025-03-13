@@ -7,6 +7,7 @@ dashboards:
   imagePullSecrets: []
   updateStrategy: "Recreate"
   replicas: 1
+
   resources:
     requests:
       cpu: "100m"
@@ -14,31 +15,36 @@ dashboards:
     limits:
       cpu: "100m"
       memory: "512M"
+
   opensearchHosts: ""
+
   # A list of secrets and their paths to mount inside the pod
   # This is useful for mounting certificates for security and for mounting
   # the X-Pack license
   secretMounts: []
-  #    - name: certs
-  #      secretName: dashboard-certs
-  #      path: /usr/share/dashboards/certs
+#    - name: certs
+#      secretName: dashboard-certs
+#      path: /usr/share/dashboards/certs
 
   extraEnvs: []
-  #    - name: "NODE_OPTIONS"
-  #      value: "--max-old-space-size=1800"
+#    - name: "NODE_OPTIONS"
+#      value: "--max-old-space-size=1800"
 
   envFrom: []
+
   extraVolumes: []
-  #    - name: extras
-  #      emptyDir: {}
+#    - name: extras
+#      emptyDir: {}
 
   extraVolumeMounts: []
-  #    - name: extras
-  #      mountPath: /usr/share/extras
-  #      readOnly: true
+#    - name: extras
+#      mountPath: /usr/share/extras
+#      readOnly: true
 
   extraInitContainers: []
+
   extraContainers: []
+
   ingress:
     enabled: false
     annotations: {}
@@ -49,9 +55,9 @@ dashboards:
         paths:
           - path: /
     tls: []
-  #      - secretName: chart-example-tls
-  #        hosts:
-  #          - chart-example.local
+#      - secretName: chart-example-tls
+#        hosts:
+#          - chart-example.local
 
   service:
     type: ClusterIP
@@ -63,52 +69,67 @@ dashboards:
     loadBalancerSourceRanges: []
     # 0.0.0.0/0
     httpPortName: http
+
   config: {}
-  #    # Default OpenSearch Dashboards configuration from docker image of Dashboards
-  #    opensearch_dashboards.yml:
-  #      server:
-  #        name: dashboards
-  #        host: 0.0.0.0
-  #        # Dashboards TLS Config (Ensure the cert files are present before enabling SSL)
-  #        ssl:
-  #          enabled: true
-  #          key: /usr/share/opensearch-dashboards/certs/dashboards-key.pem
-  #          certificate: /usr/share/opensearch-dashboards/certs/dashboards-crt.pem
-  #      # Determines how dashboards will verify certificates (needs to be none for default opensearch certificates to work)
-  #      opensearch:
-  #        ssl:
-  #          certificateAuthorities: /usr/share/opensearch-dashboards/certs/dashboards-root-ca.pem
-  #          # if utilizing custom CA certs for connection to opensearch, provide the CA here
+#    # Default OpenSearch Dashboards configuration from docker image of Dashboards
+#    opensearch_dashboards.yml:
+#      server:
+#        name: dashboards
+#        host: 0.0.0.0
+#        # Dashboards TLS Config (Ensure the cert files are present before enabling SSL)
+#        ssl:
+#          enabled: true
+#          key: /usr/share/opensearch-dashboards/certs/dashboards-key.pem
+#          certificate: /usr/share/opensearch-dashboards/certs/dashboards-crt.pem
+#      # Determines how dashboards will verify certificates (needs to be none for default opensearch certificates to work)
+#      opensearch:
+#        ssl:
+#          certificateAuthorities: /usr/share/opensearch-dashboards/certs/dashboards-root-ca.pem
+#          # if utilizing custom CA certs for connection to opensearch, provide the CA here
 
   nodeSelector: {}
+
   tolerations: []
+
   affinity: {}
+
   priorityClassName: ""
+
   opensearchAccount:
     secret: ""
     keyPassphrase:
       enabled: false
+
   labels: {}
+
   hostAliases: []
-  #    - ip: "127.0.0.1"
-  #      hostnames:
-  #      - "foo.local"
-  #      - "bar.local"
+#    - ip: "127.0.0.1"
+#      hostnames:
+#      - "foo.local"
+#      - "bar.local"
 
   serverHost: "0.0.0.0"
+
   serviceAccount:
     ## Specifies whether a ServiceAccount should be created
     create: true
     ## The name of the ServiceAccount to use.
     ## If not set and create is true, a name is generated using the fullname template
     name: ""
+
   podAnnotations: {}
+
   podSecurityContext: {}
+
   securityContext: {}
+
 global:
   clusterName: opensearch
+
   cloudIntegrationEnabled: false
+
   imagePullSecrets: []
+
   externalOpensearch:
     enabled: false
     url: ""
@@ -121,6 +142,7 @@ global:
     config:
       action.auto_create_index: "false"
       compatibility.override_main_response_version: "false"
+
   tls:
     enabled: false
     cipherSuites: []
@@ -130,10 +152,13 @@ global:
       certProvider: cert-manager
       durationDays: 365
       clusterIssuerName: ""
+
   velero:
     preHookBackupEnabled: true
+
   psp:
     create: false
+
   disasterRecovery:
     image: ghcr.io/netcracker/disaster-recovery-daemon:main
     tls:
@@ -175,30 +200,35 @@ global:
         memory: "32Mi"
   customLabels: {}
   securityContext: {}
+
 operator:
   dockerImage: ghcr.io/netcracker/qubership-opensearch-operator:main
   replicas: 1
   reconcilePeriod: 60
+
   ## Tolerations for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+
   affinity: {}
-  #    podAntiAffinity:
-  #      requiredDuringSchedulingIgnoredDuringExecution:
-  #        - labelSelector:
-  #            matchExpressions:
-  #              - key: component
-  #                operator: In
-  #                values:
-  #                  - opensearch-service-operator
-  #          topologyKey: "kubernetes.io/hostname"
+#    podAntiAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        - labelSelector:
+#            matchExpressions:
+#              - key: component
+#                operator: In
+#                values:
+#                  - opensearch-service-operator
+#          topologyKey: "kubernetes.io/hostname"
 
   # used to assign priority to the OpenSearch Operator pod
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   priorityClassName: ""
+
   customLabels: {}
   securityContext: {}
+
   resources:
     requests:
       memory: 128Mi
@@ -206,6 +236,7 @@ operator:
     limits:
       memory: 128Mi
       cpu: 100m
+
 opensearch:
   ## Used when deploying hot/warm architecture. Allows second aliased deployment to find cluster.
   ## Default {{ template opensearch.fullname }}-discovery.
@@ -237,11 +268,11 @@ opensearch:
     config:
       securityConfigSecret: ""
       data: {}
-      #        config.yml: |-
-      #        internal_users.yml: |-
-      #        roles.yml: |-
-      #        rolesMapping.yml: |-
-      #        tenants.yml: |-
+#        config.yml: |-
+#        internal_users.yml: |-
+#        roles.yml: |-
+#        rolesMapping.yml: |-
+#        tenants.yml: |-
     enhancedSecurityPlugin:
       enabled: true
     ldap:
@@ -249,38 +280,43 @@ opensearch:
       enableSsl: false
       search:
         roleSearchEnabled: false
+
   ## securityContext to apply to the pod. Allows for running as non-root
   securityContextCustom: {}
-  #    fsGroup: 1000
-  #    runAsUser: 1000
-  #    runAsGroup: 1000
+#    fsGroup: 1000
+#    runAsUser: 1000
+#    runAsGroup: 1000
 
   extraEnvs: []
+
   extraInitContainers: []
-  #    - name: do-something
-  #      image: busybox
-  #      command: ['do', 'something']
+#    - name: do-something
+#      image: busybox
+#      command: ['do', 'something']
 
   extraVolumes: []
-  #    - name: extras
-  #      emptyDir: {}
+#    - name: extras
+#      emptyDir: {}
 
   extraVolumeMounts: []
-  #    - name: extras
-  #      mountPath: /usr/share/extras
-  #      readOnly: true
+#    - name: extras
+#      mountPath: /usr/share/extras
+#      readOnly: true
 
   initContainer:
     dockerImage: busybox:1.35.0
+
   ## Set optimal sysctl. This requires privilege. Can be disabled if
   ## the system has already been preconfigured.
   sysctl:
     enabled: false
+
   ## init container to chown the mount volume. not necessary if setting a
   ## fsGroup in the securityContext
   fixmount:
     enabled: false
     securityContext: {}
+
   tls:
     enabled: true
     cipherSuites: []
@@ -308,10 +344,12 @@ opensearch:
         key: ""
         ca: ""
       existingCertSecret: ""
+
   master:
     enabled: true
     replicas: 3
     updateStrategy: "RollingUpdate"
+
     ## Enable persistence using Persistent Volume Claims
     ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
     ##
@@ -322,10 +360,12 @@ opensearch:
       ## If defined, PVC must be created manually before volume will be bound
       ##
       existingClaim: ""
+
       ## The subdirectory of the volume to mount to, useful in dev environments
       ## and one PV for multiple services.
       ##
       subPath: ""
+
       ## OpenSearch master Persistent Volume Storage Class
       ## If defined, storageClassName: <storageClass>
       ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -333,14 +373,18 @@ opensearch:
       ##   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack).
       ##
       storageClass: "-"
+
       # The List of predefined Persistent Volumes for the OpenSearch master. Should be specified as yaml list.
       # OpenSearch nodes take name of these Persistent Volumes in order.
       persistentVolumes: []
+
       nodes: []
+
       accessModes:
         - ReadWriteOnce
       size: 5Gi
       annotations: {}
+
     resources:
       requests:
         cpu: 300m
@@ -372,23 +416,27 @@ opensearch:
               matchLabels:
                 role: master
     podAnnotations: {}
+
     # used to assign priority to the OpenSearch master pods
     # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
     priorityClassName: ""
+
     extraInitContainers: []
-    #      - name: do-something
-    #        image: busybox
-    #        command: ['do', 'something']
+#      - name: do-something
+#        image: busybox
+#        command: ['do', 'something']
 
     extraContainers: []
-    #      - name: do-something
-    #        image: busybox
-    #        command: ['do', 'something']
+#      - name: do-something
+#        image: busybox
+#        command: ['do', 'something']
     customLabels: {}
+
   arbiter:
     enabled: false
     replicas: 1
     updateStrategy: "RollingUpdate"
+
     ## Enable persistence using Persistent Volume Claims
     ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
     ##
@@ -399,10 +447,12 @@ opensearch:
       ## If defined, PVC must be created manually before volume will be bound
       ##
       existingClaim: ""
+
       ## The subdirectory of the volume to mount to, useful in dev environments
       ## and one PV for multiple services.
       ##
       subPath: ""
+
       ## OpenSearch arbiter Persistent Volume Storage Class
       ## If defined, storageClassName: <storageClass>
       ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -410,14 +460,18 @@ opensearch:
       ##   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack).
       ##
       storageClass: "-"
+
       # The List of predefined Persistent Volumes for the OpenSearch arbiter. Should be specified as yaml list.
       # OpenSearch nodes take name of these Persistent Volumes in order.
       persistentVolumes: []
+
       nodes: []
+
       accessModes:
         - ReadWriteOnce
       size: 5Gi
       annotations: {}
+
     resources:
       requests:
         cpu: 250m
@@ -446,19 +500,22 @@ opensearch:
               matchLabels:
                 role: master
     podAnnotations: {}
+
     # used to assign priority to the OpenSearch arbiter pods
     # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
     priorityClassName: ""
+
     extraInitContainers: []
-    #      - name: do-something
-    #        image: busybox
-    #        command: ['do', 'something']
+#      - name: do-something
+#        image: busybox
+#        command: ['do', 'something']
 
     extraContainers: []
-    #      - name: do-something
-    #        image: busybox
-    #        command: ['do', 'something']
+#      - name: do-something
+#        image: busybox
+#        command: ['do', 'something']
     customLabels: {}
+
   data:
     enabled: true
     ## Enables dedicated StatefulSet for data. Otherwise, master nodes are as data storage.
@@ -466,6 +523,7 @@ opensearch:
       enabled: false
     replicas: 3
     updateStrategy: "RollingUpdate"
+
     ## Enable persistence using Persistent Volume Claims
     ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
     ##
@@ -476,10 +534,12 @@ opensearch:
       ## If defined, PVC must be created manually before volume will be bound
       ##
       existingClaim: ""
+
       ## The subdirectory of the volume to mount to, useful in dev environments
       ## and one PV for multiple services.
       ##
       subPath: ""
+
       ## OpenSearch data Persistent Volume Storage Class
       ## If defined, storageClassName: <storageClass>
       ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -487,14 +547,18 @@ opensearch:
       ##   set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS & OpenStack).
       ##
       storageClass: "-"
+
       # The List of predefined Persistent Volumes for the OpenSearch data. Should be specified as yaml list.
       # OpenSearch nodes take name of these Persistent Volumes in order.
       persistentVolumes: []
+
       nodes: []
+
       accessModes:
         - ReadWriteOnce
       size: 5Gi
       annotations: {}
+
     resources:
       requests:
         cpu: 250m
@@ -529,9 +593,11 @@ opensearch:
                   role: data
     podAnnotations: {}
     customLabels: {}
+
     # used to assign priority to the OpenSearch data pods
     # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
     priorityClassName: ""
+
   client:
     enabled: true
     ## Enables dedicated deployment for client/ingest. Otherwise, master nodes as client/ingest
@@ -540,20 +606,20 @@ opensearch:
     service:
       type: ClusterIP
       annotations: {}
-      # # Defined ELB backend protocol as HTTPS to allow connection to OpenSearch API
-      # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
-    # # ARN of ACM certificate registered to the deployed ELB for handling connections over TLS
-    # # ACM certificate should be issued to the DNS hostname defined earlier (elk.sec.example.com)
-    # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:111222333444:certificate/c69f6022-b24f-43d9-b9c8-dfe288d9443d"
-    # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+        # # Defined ELB backend protocol as HTTPS to allow connection to OpenSearch API
+        # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
 
-    # service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
-    # service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout: "60"
-    # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+        # # ARN of ACM certificate registered to the deployed ELB for handling connections over TLS
+        # # ACM certificate should be issued to the DNS hostname defined earlier (elk.sec.example.com)
+        # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:111222333444:certificate/c69f6022-b24f-43d9-b9c8-dfe288d9443d"
+        # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
 
-    # # Annotation to create internal only ELB
-    # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+        # service.beta.kubernetes.io/aws-load-balancer-connection-draining-enabled: "true"
+        # service.beta.kubernetes.io/aws-load-balancer-connection-draining-timeout: "60"
+        # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
 
+        # # Annotation to create internal only ELB
+        # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
     replicas: 3
     javaOpts: "-Xms512m -Xmx512m"
     ingress:
@@ -604,9 +670,11 @@ opensearch:
                   role: client
     podAnnotations: {}
     customLabels: {}
+
     # used to assign priority to the OpenSearch client pods
     # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
     priorityClassName: ""
+
   snapshots:
     enabled: false
     repositoryName: "snapshots"
@@ -628,6 +696,7 @@ opensearch:
       gcs:
         secretName: ""
         secretKey: ""
+
   audit: {}
   config:
     action.auto_create_index: false
@@ -647,7 +716,9 @@ opensearch:
       - C=CA,L=Opensearch,O=Opensearch,OU=Opensearch,CN=opensearch-admin
     plugins.security.enable_snapshot_restore_privilege: true
     plugins.security.check_snapshot_restore_write_privileges: true
+
     path.repo: ["/usr/share/opensearch/snapshots"]
+
     # cluster.routing.allocation.disk.threshold_enabled: false
     # plugins.security.audit.config.disabled_rest_categories: NONE
     # plugins.security.audit.config..disabled_transport_categories: NONE
@@ -685,14 +756,18 @@ opensearch:
     plugins.security.ssl.transport.pemkey_filepath: transport-key.pem
     plugins.security.ssl.transport.pemtrustedcas_filepath: transport-root-ca.pem
     plugins.security.ssl.transport.enforce_hostname_verification: false
+
     # TLS Configuration REST Layer
     plugins.security.ssl.http.enabled: ${TLS_ENABLED}
     plugins.security.ssl.http.pemcert_filepath: rest-crt.pem
     plugins.security.ssl.http.pemkey_filepath: rest-key.pem
     plugins.security.ssl.http.pemtrustedcas_filepath: rest-root-ca.pem
+
     # TLS Configuration Transport Layer truststore
     plugins.security.ssl.transport.truststore_filepath: cacerts
+
   log4jConfig: {}
+
   loggingConfig:
     ## Default config
     ## you can override this using by setting a system property, for example -Des.logger.level=DEBUG
@@ -709,25 +784,32 @@ opensearch:
         layout:
           type: consolePattern
           conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
+
   transportKeyPassphrase:
     enabled: false
     passPhrase: ""
+
   sslKeyPassphrase:
     enabled: false
     passPhrase: ""
+
   maxMapCount: 262144
+
   dockerImage: ghcr.io/netcracker/qubership-docker-opensearch:main
   dockerTlsInitImage: ghcr.io/netcracker/qubership-opensearch-tls-init:main
   ## Specifies the image pull policy. Can be "Always" or "IfNotPresent" or "Never".
   ## Default to "Always".
   imagePullPolicy: ""
+
   configDirectory: /usr/share/opensearch/config
+
   serviceAccount:
     ## Specifies whether a ServiceAccount should be created
     create: true
     ## The name of the ServiceAccount to use.
     ## If not set and create is true, a name is generated using the fullname template
     name: ""
+
   tlsInit:
     resources:
       requests:
@@ -736,6 +818,7 @@ opensearch:
       limits:
         memory: 128Mi
         cpu: 100m
+
 podScheduler:
   enabled: true
   dockerImage: bitnami/kubectl:1.30.6
@@ -752,20 +835,23 @@ podScheduler:
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   priorityClassName: ""
   securityContext: {}
-  #    runAsUser: 1000
+#    runAsUser: 1000
   customLabels: {}
+
 monitoring:
   enabled: true
   dockerImage: ghcr.io/netcracker/qubership-opensearch-monitoring:main
   ## Specifies the image pull policy. Can be "Always" or "IfNotPresent" or "Never".
   ## Default to "Always".
   imagePullPolicy: ""
+
   monitoringType: "prometheus"
   installDashboard: true
   smDbHost: ""
   smDbName: ""
   smDbUsername: ""
   smDbPassword: ""
+
   includeIndices: false
   slowQueries:
     enabled: false
@@ -776,11 +862,14 @@ monitoring:
   thresholds:
     lagAlert: -1
     slowQuerySecondsAlert: 10
+
   opensearchHost: ""
   opensearchPort: 9200
   opensearchExecPluginTimeout: "15s"
+
   opensearchDbaasAdapterHost: ""
   opensearchDbaasAdapterPort: 8080
+
   resources:
     requests:
       memory: 256Mi
@@ -788,14 +877,17 @@ monitoring:
     limits:
       memory: 256Mi
       cpu: 200m
+
   ## Node labels for pod assignment
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
   nodeSelector: {}
+
   ## Tolerations for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+
   affinity: {}
   #    podAffinity:
   #      preferredDuringSchedulingIgnoredDuringExecution:
@@ -812,12 +904,16 @@ monitoring:
   # used to assign priority to the OpenSearch monitoring pod
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   priorityClassName: ""
+
   securityContext: {}
+
   monitoringCoreosGroup: false
   customLabels: {}
+
   serviceMonitor:
     clusterStateScrapeInterval: 60s
     clusterStateScrapeTimeout: 30s
+
 # DBaaS adapter based on OpenSearch client
 dbaasAdapter:
   enabled: false
@@ -825,16 +921,19 @@ dbaasAdapter:
   ## Specifies the image pull policy. Can be "Always" or "IfNotPresent" or "Never".
   ## Default to "Always".
   imagePullPolicy: ""
+
   dbaasAdapterAddress: ""
   dbaasUsername: ""
   dbaasPassword: ""
   apiVersion: v2
+
   dbaasAggregatorRegistrationAddress: ""
   dbaasAggregatorPhysicalDatabaseIdentifier: ""
   registrationAuthUsername: ""
   registrationAuthPassword: ""
   physicalDatabasesLabels: {}
   registrationEnabled: false
+
   opensearchHost: ""
   opensearchPort: 9200
   opensearchProtocol: ""
@@ -842,6 +941,7 @@ dbaasAdapter:
   opensearchRepoRoot: "/usr/share/opensearch"
   opensearchClusterVersion: ""
   qubershipOpensearchClusterVersion: ""
+
   tls:
     enabled: true
     certificates:
@@ -852,6 +952,7 @@ dbaasAdapter:
     subjectAlternativeName:
       additionalDnsNames: []
       additionalIpAddresses: []
+
   resources:
     requests:
       memory: 32Mi
@@ -859,14 +960,17 @@ dbaasAdapter:
     limits:
       memory: 32Mi
       cpu: 200m
+
   ## Node labels for pod assignment
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
   nodeSelector: {}
+
   ## Tolerations for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+
   affinity: {}
   #    podAffinity:
   #      preferredDuringSchedulingIgnoredDuringExecution:
@@ -892,8 +996,11 @@ dbaasAdapter:
   # used to assign priority to the OpenSearch DBaaS adapter pod
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   priorityClassName: ""
+
   securityContext: {}
+
   customLabels: {}
+
 curator:
   enabled: false
   dockerImage: ghcr.io/netcracker/qubership-opensearch-curator:main
@@ -901,12 +1008,15 @@ curator:
   ## Specifies the image pull policy. Can be "Always" or "IfNotPresent" or "Never".
   ## Default to "Always".
   imagePullPolicy: ""
+
   opensearchHost: ""
+
   snapshotRepositoryName: ""
   backupSchedule: ""
   evictionPolicy: ""
   username: ""
   password: ""
+
   tls:
     enabled: true
     certificates:
@@ -917,6 +1027,7 @@ curator:
     subjectAlternativeName:
       additionalDnsNames: []
       additionalIpAddresses: []
+
   indicesCleanerSchedulerUnit: ""
   indicesCleanerSchedulerUnitCount: ""
   indicesCleanerConfigurationKey: "patterns_to_delete"
@@ -935,14 +1046,17 @@ curator:
     limits:
       memory: 256Mi
       cpu: 200m
+
   ## Node labels for pod assignment
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   #
   nodeSelector: {}
+
   ## Tolerations for pod assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
   tolerations: []
+
   affinity: {}
   #    podAffinity:
   #      preferredDuringSchedulingIgnoredDuringExecution:
@@ -959,11 +1073,13 @@ curator:
   # used to assign priority to the OpenSearch curator pod
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   priorityClassName: ""
+
   securityContext: {}
   #    runAsUser: 1000
   #    fsGroup: 1000
 
   customLabels: {}
+
 statusProvisioner:
   enabled: true
   dockerImage: ghcr.io/netcracker/qubership-deployment-status-provisioner:main
@@ -980,6 +1096,7 @@ statusProvisioner:
       cpu: "100m"
   customLabels: {}
   securityContext: {}
+
 integrationTests:
   enabled: false
   dockerImage: ghcr.io/netcracker/qubership-opensearch-integration-tests:main
@@ -993,11 +1110,13 @@ integrationTests:
     prometheus:
       user: ""
       password: ""
+
   tags: "smoke"
   opensearchPort: 9200
   opensearchDbaasAdapterPort: 8080
   identityProviderUrl: ""
   prometheusUrl: ""
+
   resources:
     requests:
       memory: 256Mi
@@ -1005,25 +1124,29 @@ integrationTests:
     limits:
       memory: 256Mi
       cpu: 400m
+
   affinity: {}
-  #    podAffinity:
-  #      preferredDuringSchedulingIgnoredDuringExecution:
-  #        - podAffinityTerm:
-  #            labelSelector:
-  #              matchExpressions:
-  #                - key: component
-  #                  operator: In
-  #                  values:
-  #                    - opensearch
-  #            topologyKey: "kubernetes.io/hostname"
-  #          weight: 100
+#    podAffinity:
+#      preferredDuringSchedulingIgnoredDuringExecution:
+#        - podAffinityTerm:
+#            labelSelector:
+#              matchExpressions:
+#                - key: component
+#                  operator: In
+#                  values:
+#                    - opensearch
+#            topologyKey: "kubernetes.io/hostname"
+#          weight: 100
   customLabels: {}
   securityContext: {}
+
   # used to assign priority to the OpenSearch integration tests pod
   # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   priorityClassName: ""
+
 nameOverride: "opensearch"
 fullnameOverride: "opensearch"
+
 # Cloud Release Integration
 # The name of the Service exposed for the database.
 SERVICE_NAME: "opensearch-service"
@@ -1032,6 +1155,6 @@ PART_OF: "opensearch-service"
 # Delimiter for labels
 DELIMITER: "-"
 # Artifact descriptor version which is installed.
-ARTIFACT_DESCRIPTOR_VERSION: "" # TO_BE_REPLACED
+ARTIFACT_DESCRIPTOR_VERSION: ""  # TO_BE_REPLACED
+
 DEPLOY_W_HELM: "true"
-"null": "null"
