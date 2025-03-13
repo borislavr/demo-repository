@@ -553,7 +553,6 @@ opensearch:
 
     # # Annotation to create internal only ELB
     # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
-
     replicas: 3
     javaOpts: "-Xms512m -Xmx512m"
     ingress:
