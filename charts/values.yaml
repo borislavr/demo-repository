@@ -1078,7 +1078,7 @@ curator:
 
 statusProvisioner:
   enabled: true
-  dockerImage: ghcr.io/netcracker/qubership-deployment-status-provisioner:main
+  dockerImage: ghcr.io/netcracker/qubership-deployment-status-provisioner:2.0.0
   lifetimeAfterCompletion: 600
   podReadinessTimeout: 800
   crProcessingTimeout: 600
@@ -1095,7 +1095,7 @@ statusProvisioner:
 
 integrationTests:
   enabled: false
-  dockerImage: ghcr.io/netcracker/qubership-opensearch-integration-tests:3.0.0
+  dockerImage: ghcr.io/netcracker/qubership-opensearch-integration-tests:1.0.0
   statusWritingEnabled: true
   isShortStatusMessage: true
   secrets:
