@@ -1,37 +1,10 @@
 
 child_modules:
-  # - name: qubership-monitoring-operator
-  #   version: 1.0.0
-  #   version_path: monitoringOperator.image
-  #   module_string: registry:port/path/to/monitoring-operator-image:${version}
-  # - name: qubership-vmauth
-  #   version: 1.0.0
-  #   version_path: victoriametrics.vmAuth
-  #   module_string: registry:port/path/to/vmauth-image:${version}
-  # - name: qubership-vmSingle
-  #   version: 1.0.0
-  #   version_path: victoriametrics.vmSingle
-  #   module_string: registry:port/path/to/vmsingle-image:${version}
   - name: module1
     version: 1.0.0
-    version_path: integrationTests.dockerImage
     module_string: ghcr.io/netcracker/qubership-opensearch-integration-tests:${version}
   - name: module2
     version: 2.0.0
-    version_path: statusProvisioner.dockerImage
-    module_string: ghcr.io/netcracker/qubership-deployment-status-provisioner::${version}
-  - name: module3
-    version: 3.0.0
-    version_path: integrationTests.dockerImage
-    module_string: ghcr.io/netcracker/qubership-opensearch-integration-tests:${version}
+    module_string: ghcr.io/netcracker/qubership-deployment-status-provisioner:${version}
 
 config_file: charts/values.yaml
-
-# monitoringOperator:
-#   image: registry:port/path/to/monitoring-operator-image:tag
-
-# victoriametrics:
-#   vmAuth:
-#     image: registry:port/path/to/vmauth-image:tag
-#   vmSingle:
-#     image:  registry:port/path/to/vmsingle-image:tag
