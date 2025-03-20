@@ -22,7 +22,7 @@ jobs:
             curl -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             -o ./collabs/${repo}.json \
-            -XGET https://api.github.com/repos/MyBorislavrOrg/${repo}/collaborators\?affiliation\=outside
+            -XGET "https://api.github.com/repos/MyBorislavrOrg/${repo}/collaborators?affiliation=outside"
       - name: "Upload jsons"
         uses: actions/upload-artifact@v4
         with:
