@@ -17,7 +17,7 @@ jobs:
           -H "X-GitHub-Api-Version: 2022-11-28" \
           "https://api.github.com/orgs/MyBorislavrOrg/repos?type=public&page=1&per_page=200" | jq -jc 'sort_by(.name) | .[] | .name+" "')
           echo "Repos: ${repos}"
-          echo "repos=${repos}" >> $GITHUB_ENV
+          # echo "repos=${repos}" >> $GITHUB_ENV
           for repo in ${repos}; do
             curl -sL -o ./collabs/${repo}.json \
             -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" \
