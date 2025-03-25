@@ -40,12 +40,13 @@ jobs:
           ref: main
           path: ${{ matrix.module }}
           repository: ${{ github.repository_owner }}/${{ matrix.module }}
+          token: ${{ secrets.MVN_MULTI_MODULE_TOKEN }}
       - name: "Build"
         run: |
           cd ${GITHUB_WORKSPACE}/${{ matrix.module }}
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository_owner }}/${{ matrix.module }}
+          # git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository_owner }}/${{ matrix.module }}
           echo "Bumping ${{ matrix.module }} version"
           mvn build-helper:parse-version versions:set \
           -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
