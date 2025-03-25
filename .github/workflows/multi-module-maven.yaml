@@ -66,7 +66,7 @@ jobs:
             -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0
           else
             mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
-            -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}
+            -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
           fi
           # mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
           # -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
