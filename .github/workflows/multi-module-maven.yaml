@@ -4,15 +4,9 @@ name: Multi-module maven release
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to release'
-        type: string
-        required: true
-        default: '1.0.0'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   get-child-modules:
