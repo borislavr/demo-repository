@@ -56,7 +56,6 @@ jobs:
           cd ${GITHUB_WORKSPACE}/${{ matrix.module }}
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          # git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository_owner }}/${{ matrix.module }}
           echo "Bumping ${{ matrix.module }} version"
           if [ "${{ github.event.inputs.version-type }}" == "major" ]; then
             mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
@@ -68,8 +67,6 @@ jobs:
             mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
             -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
           fi
-          # mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
-          # -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
           export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           echo "Building ${{ matrix.module }} version ${VERSION}"
