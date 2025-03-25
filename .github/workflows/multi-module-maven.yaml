@@ -59,6 +59,9 @@ jobs:
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
           git tag -a v${VERSION} -m "Release version v${VERSION}"
           git push origin v${VERSION}
+        env:
+          GITHUB_TOKEN: ${{ secrets.MVN_MULTI_MODULE_TOKEN }}
+        shell: bash
       - name: "Trigger module release"
         uses: netcracker/qubership-workflow-hub/actions/custom-event@main
         with:
@@ -87,6 +90,8 @@ jobs:
           git commit -m "Bump version to next snapshot"
           git push
         shell: bash
+        env:
+          GITHUB_TOKEN: ${{ secrets.MVN_MULTI_MODULE_TOKEN }}
 
   release:
     needs: build
