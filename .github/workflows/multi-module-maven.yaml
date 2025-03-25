@@ -54,11 +54,11 @@ jobs:
           mvn install
           mvn clean
           git add .
-          git commit -m "Bump version"
+          git commit -m "Bump version [skip ci]"
           git push
           export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
-          git tag -a v${VERSION} -m "Release version v${VERSION}"
+          git tag -a v${VERSION} -m "Release version v${VERSION} [skip ci]"
           git push origin v${VERSION}
         env:
           GITHUB_TOKEN: ${{ secrets.MVN_MULTI_MODULE_TOKEN }}
@@ -88,51 +88,51 @@ jobs:
           -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
           mvn clean
           git add .
-          git commit -m "Bump version to next snapshot"
+          git commit -m "Bump version to next snapshot [skip ci]"
           git push
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.MVN_MULTI_MODULE_TOKEN }}
 
-  release:
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        module: ${{ fromJson(needs.get-child-modules.outputs.modules) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # release:
+  #   needs: build
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       module: ${{ fromJson(needs.get-child-modules.outputs.modules) }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: "Get module version"
-        id: get-module-version
-        run: |
-          import os
-          import sys
-          import yaml
+  #     - name: "Get module version"
+  #       id: get-module-version
+  #       run: |
+  #         import os
+  #         import sys
+  #         import yaml
 
-          with open('./.github/.child-modules.yaml', 'r') as f:
-              data = yaml.safe_load(f)
-              for module in data['child_modules']:
-                  if module['name'] == '${{ matrix.module }}':
-                      print(f"module-version={module['version']}")
-                      print(f"module-version={module['version']}", file=open(os.getenv('GITHUB_OUTPUT'), 'a'))
-                      sys.exit(0)
-          sys.exit(1)
-        shell: python
+  #         with open('./.github/.child-modules.yaml', 'r') as f:
+  #             data = yaml.safe_load(f)
+  #             for module in data['child_modules']:
+  #                 if module['name'] == '${{ matrix.module }}':
+  #                     print(f"module-version={module['version']}")
+  #                     print(f"module-version={module['version']}", file=open(os.getenv('GITHUB_OUTPUT'), 'a'))
+  #                     sys.exit(0)
+  #         sys.exit(1)
+  #       shell: python
 
-      - name: "Trigger module release"
-        uses: netcracker/qubership-workflow-hub/actions/custom-event@main
-        with:
-          github-token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
-          repo: ${{ matrix.module }}
-          owner: ${{ github.repository_owner }}
-          event-type: remote_release_trigger
-          client-payload: |
-            {
-              "version": "${{ steps.get-module-version.outputs.module-version }}"
-            }
+  #     - name: "Trigger module release"
+  #       uses: netcracker/qubership-workflow-hub/actions/custom-event@main
+  #       with:
+  #         github-token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
+  #         repo: ${{ matrix.module }}
+  #         owner: ${{ github.repository_owner }}
+  #         event-type: remote_release_trigger
+  #         client-payload: |
+  #           {
+  #             "version": "${{ steps.get-module-version.outputs.module-version }}"
+  #           }
   # update-modules-versions:
   #   permissions:
   #     contents: write
