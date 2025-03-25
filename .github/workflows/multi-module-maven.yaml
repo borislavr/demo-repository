@@ -70,14 +70,14 @@ jobs:
           fi
           # mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
           # -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
-          echo "Building ${{ matrix.module }}"
+          export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Building ${{ matrix.module }} version ${VERSION}"
           mvn install
           mvn clean
           git add .
-          git commit -m "Bump version [skip ci]"
+          git commit -m "Bump version to ${VERSION} [skip ci]"
           git push
-          export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
           git tag -a v${VERSION} -m "Release version v${VERSION} [skip ci]"
           git push origin v${VERSION}
         env:
@@ -106,9 +106,10 @@ jobs:
           cd ${GITHUB_WORKSPACE}/${{ matrix.module }}
           mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
           -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+          export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           mvn clean
           git add .
-          git commit -m "Bump version to next snapshot [skip ci]"
+          git commit -m "Bump version to next snapshot ${VERSION} [skip ci]"
           git push
         shell: bash
         env:
