@@ -29,7 +29,7 @@ runs:
         check_version_type "${{ inputs.version-type }}"
         check_module "${{ inputs.module }}"
         check_token "${{ inputs.token }}"
-        set_env_vars "${{ inputs.module }}" "${{ inputs.version-type }}"
+        # set_env_vars "${{ inputs.module }}" "${{ inputs.version-type }}"
       shell: bash
 
     - name: "Configure java"
@@ -45,11 +45,26 @@ runs:
         repository: ${{ github.repository_owner }}/${{ inputs.module }}
         token: ${{ inputs.token }}
     - name: "Build"
-      run: bump_version_and_build "${{ inputs.module }}" "${{ inputs.version-type }}"
+      run: |
+        . ${GITHUB_ACTION_PATH}/action-scripts.sh
+        bump_version_and_build "${{ inputs.module }}" "${{ inputs.version-type }}"
       shell: bash
+      env:
+        MODULE: ${{ inputs.module }}
+        VERSION_TYPE: ${{ inputs.version-type }}
     - name: "Deploy"
-      run: maven_deploy "${{ inputs.module }}"
+      run: |
+        . ${GITHUB_ACTION_PATH}/action-scripts.sh
+        maven_deploy "${{ inputs.module }}"
       shell: bash
+      env:
+        MODULE: ${{ inputs.module }}
+        VERSION_TYPE: ${{ inputs.version-type }}
     - name: "Bump version to next snapshot"
-      run: bump_to_next_snapshot
+      run: |
+        . ${GITHUB_ACTION_PATH}/action-scripts.sh
+        bump_to_next_snapshot
       shell: bash
+      env:
+        MODULE: ${{ inputs.module }}
+        VERSION_TYPE: ${{ inputs.version-type }}
