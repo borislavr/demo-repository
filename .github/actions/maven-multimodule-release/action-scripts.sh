@@ -1,32 +1,32 @@
 #! /usr/bin/env bash
 
-check_version_type() {
+function check_version_type() {
     if [[ $1 != "major" && $1 != "minor" && $1 != "patch" ]]; then
         echo "Invalid version type. Please use major, minor or patch."
         exit 1
     fi
 }
 
-check_module() {
+function check_module() {
     if [ -z "$1" ]; then
         echo "Module is required."
         exit 1
     fi
 }
 
-check_token() {
+function check_token() {
     if [ -z "$1" ]; then
         echo "token input parameter is required."
         exit 1
     fi
 }
 
-set_env_vars() {
+function set_env_vars() {
     export MODULE=$1
     export VERSION_TYPE=$2
 }
 
-bump_version_and_build() {
+function bump_version_and_build() {
     cd ${GITHUB_WORKSPACE}/${MODULE}
     git config --global user.name "${{ github.actor }}"
     git config --global user.email "${{ github.actor }}@users.noreply.github.com"
@@ -53,7 +53,7 @@ bump_version_and_build() {
     git push origin v${VERSION}
 }
 
-maven_deploy() {
+function maven_deploy() {
     cd ${GITHUB_WORKSPACE}/${MODULE}
     export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     echo "Deploying ${MODULE} version ${VERSION}"
@@ -61,7 +61,7 @@ maven_deploy() {
     mvn --batch-mode install -DskipTests
 }
 
-bump_to_next_snapshot() {
+function bump_to_next_snapshot() {
     cd ${GITHUB_WORKSPACE}/${MODULE}
     mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
     -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
