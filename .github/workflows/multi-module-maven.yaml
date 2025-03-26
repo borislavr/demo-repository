@@ -35,6 +35,7 @@ jobs:
     needs: get-child-modules
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         module: ${{ fromJson(needs.get-child-modules.outputs.modules) }}
     runs-on: ubuntu-latest
