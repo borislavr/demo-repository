@@ -13,7 +13,6 @@ inputs:
     required: true
     default: ''
     type: string
-secrets:
   token:
     description: 'GitHub token'
     required: true
@@ -29,7 +28,7 @@ runs:
       run: |
         check_version_type "${{ inputs.version-type }}"
         check_module "${{ inputs.module }}"
-        check_token "${{ secrets.token }}"
+        check_token "${{ inputs.token }}"
         set_env_vars "${{ inputs.module }}" "${{ inputs.version-type }}"
       shell: bash
 
@@ -44,7 +43,7 @@ runs:
         ref: main
         path: ${{ inputs.module }}
         repository: ${{ github.repository_owner }}/${{ inputs.module }}
-        token: ${{ secrets.token }}
+        token: ${{ inputs.token }}
     - name: "Build"
       run: bump_version_and_build "${{ inputs.module }}" "${{ inputs.version-type }}"
       shell: bash
