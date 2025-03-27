@@ -26,6 +26,7 @@ runs:
       shell: bash
     - name: "Check inputs"
       run: |
+        . ${GITHUB_ACTION_PATH}/action-scripts.sh
         check_version_type "${{ inputs.version-type }}"
         check_module "${{ inputs.module }}"
         check_token "${{ inputs.token }}"
