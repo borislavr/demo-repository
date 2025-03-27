@@ -1,5 +1,12 @@
 ---
 
+# The configuration file for the multi-module maven release workflow
+# .github/.child-modules.yaml
+# child_modules:
+#   - name: module1
+#   - name: module2
+#   - name: module3
+
 name: Multi-module maven release action
 
 on:
@@ -29,12 +36,18 @@ jobs:
       - name: "Get child modules"
         id: get-child-modules
         run: |
-          echo "modules=$(yq eval -j '.child_modules | map(.name)' ./.github/.child-modules.yaml | jq -c)" >> $GITHUB_OUTPUT
+          if [ -f ./.github/.child-modules.yaml ]; then
+            echo "modules=$(yq eval -j '.child_modules | map(.name)' ./.github/.child-modules.yaml | jq -c)" >> $GITHUB_OUTPUT
+          else
+            echo "❗ There is no configuration file .github/.child-modules.yaml"
+            exit 1
+          fi
         shell: bash
   build:
     needs: get-child-modules
     strategy:
-      fail-fast: false
+      max-parallel: 1
+      fail-fast: true
       matrix:
         module: ${{ fromJson(needs.get-child-modules.outputs.modules) }}
     runs-on: ubuntu-latest
