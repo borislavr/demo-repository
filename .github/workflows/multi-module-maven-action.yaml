@@ -61,7 +61,7 @@ jobs:
       - name: "Trigger module release"
         uses: netcracker/qubership-workflow-hub/actions/custom-event@main
         with:
-          github-token: ${{ secrets.REMOTE_TRIGGER_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ matrix.module }}
           owner: ${{ github.repository_owner }}
           event-type: remote_release_trigger
