@@ -28,8 +28,8 @@ function set_env_vars() {
 
 function bump_version_and_build() {
     cd ${GITHUB_WORKSPACE}/${MODULE}
-    git config --global user.name "${{ github.actor }}"
-    git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+    git config --global user.name "${GITHUB_ACTOR}"
+    git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
     echo "Bumping ${MODULE} version"
     if [ "${VERSION_TYPE}" == "major" ]; then
         mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
