@@ -32,13 +32,13 @@ function bump_version_and_build() {
     git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
     echo "Bumping ${MODULE} version"
     if [ "${VERSION_TYPE}" == "major" ]; then
-        mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
+        mvn --batch-mode build-helper:parse-version versions:set -DgenerateBackupPoms=false \
         -DnewVersion=\${parsedVersion.nextMajorVersion}.0.0
     elif [ "${VERSION_TYPE}" == "minor" ]; then
-        mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
+        mvn --batch-mode build-helper:parse-version versions:set -DgenerateBackupPoms=false \
         -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.nextMinorVersion}.0
     else
-        mvn build-helper:parse-version versions:set -DgenerateBackupPoms=false \
+        mvn --batch-mode build-helper:parse-version versions:set -DgenerateBackupPoms=false \
         -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
     fi
     export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
