@@ -44,7 +44,7 @@ function bump_version_and_build() {
     export VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
     echo "VERSION=${VERSION}" >> $GITHUB_ENV
     echo "Building ${MODULE} version ${VERSION}"
-    mvn install
+    mvn --batch-mode install
     mvn clean
     git add .
     git commit -m "Bump version to ${VERSION} [skip ci]"
