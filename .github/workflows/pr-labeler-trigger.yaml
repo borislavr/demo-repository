@@ -1,7 +1,8 @@
 ---
 
 name: PR Labeler Trigger
-
+run-name: PR Labeler Trigger - ${{ github.event.pull_request.number }}
+description: "Trigger the PR Labeler workflow when a PR is opened, synchronized, or reopened."
 on:
   pull_request:
     types:
