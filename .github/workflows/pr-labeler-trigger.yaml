@@ -24,7 +24,7 @@ jobs:
         with:
           event-type: "pr-labeler-trigger"
           client-payload: '{"pr-number": "${{ github.event.pull_request.number }}"}'
-          github-token: ${{ secrets.REPO_DISPATCH_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           repo: ${{ github.event.pull_request.base.repo.name }}
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
         env:
