@@ -9,6 +9,11 @@ on:
       - synchronize
       - reopened
 
+permissions:
+  contents: write
+  pull-requests: read
+  issues: read
+
 jobs:
   pr-labeler-trigger:
     runs-on: ubuntu-latest
