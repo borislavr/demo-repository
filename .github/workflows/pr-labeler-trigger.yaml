@@ -1,0 +1,21 @@
+---
+
+name: PR Labeler Trigger
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  pr-labeler-trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger PR Labeler
+        uses: netcracker/qubership-workflow-hub/actions/custom-event@main
+        with:
+          event-type: "pr-labeler-trigger"
+          client-payload: '{"pr-number": "${{ github.event.pull_request.number }}"}'
+          github-token: ${{ secrets.GITHUB_TOKEN }}

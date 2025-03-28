@@ -1,0 +1,21 @@
+---
+
+name: PR Labeler
+on:
+  repository_dispatch:
+    types: [pr-labeler-trigger]
+
+jobs:
+  pr-labeler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Execute assign labels
+        id: action-assign-labels
+        uses: mauroalderete/action-assign-labels@v1
+        with:
+          pull-request-number: ${{ github.event.client_payload['pr-number'] }}
+          github-token: ${{ github.token }}
+          conventional-commits: "./.github/auto-labeler-config.yaml"
+          maintain-labels-not-matched: true
+          apply-changes: true
