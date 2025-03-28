@@ -18,7 +18,7 @@ jobs:
         uses: mauroalderete/action-assign-labels@v1
         with:
           pull-request-number: ${{ github.event.client_payload['pr-number'] }}
-          github-token: ${{ github.token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           conventional-commits: "./.github/auto-labeler-config.yaml"
           maintain-labels-not-matched: true
           apply-changes: true
