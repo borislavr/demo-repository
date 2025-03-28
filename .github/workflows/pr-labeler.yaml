@@ -6,7 +6,7 @@ on:
     types: [pr-labeler-trigger]
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
   issues: write
 
