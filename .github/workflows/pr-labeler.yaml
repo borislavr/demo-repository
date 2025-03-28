@@ -1,13 +1,17 @@
 ---
 
 name: PR Labeler
+run-name: PR Labeler - ${{ github.event.client_payload['pr-number'] }}
+description: "Assign labels to PRs based on commit messages and PR title."
 on:
   repository_dispatch:
     types: [pr-labeler-trigger]
+
 permissions:
   contents: read
   pull-requests: write
   issues: write
+
 jobs:
   pr-labeler:
     runs-on: ubuntu-latest
