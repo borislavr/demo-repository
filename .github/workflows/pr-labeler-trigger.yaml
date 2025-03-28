@@ -19,7 +19,8 @@ jobs:
   pr-labeler-trigger:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger PR Labeler
+      - name: "Trigger PR Labeler"
+        if: ${{ github.event.pull_request.base.repo.id == github.event.pull_request.head.repo.id }}
         uses: netcracker/qubership-workflow-hub/actions/custom-event@main
         with:
           event-type: "pr-labeler-trigger"
@@ -29,3 +30,10 @@ jobs:
           owner: ${{ github.event.pull_request.base.repo.owner.login }}
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_DISPATCH_TOKEN }}
+      - name: "Output"
+        if: ${{ github.event.pull_request.base.repo.id != github.event.pull_request.head.repo.id }}
+        run: |
+          echo "Triggered PR Labeler for PR #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "PR from: `${{ github.event.pull_request.head.repo.full_name }}` to `${{ github.event.pull_request.base.repo.full_name }}`" >> $GITHUB_STEP_SUMMARY
+          echo "Event type: pr-labeler-trigger cannot be used in this context." >> $GITHUB_STEP_SUMMARY
+          echo "Please set labels manually." >> $GITHUB_STEP_SUMMARY
