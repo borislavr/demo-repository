@@ -2,4 +2,6 @@
 
 Demo repository for workflows and actions tests
 
-## Test
+## Test 1
+
+## Test 2
