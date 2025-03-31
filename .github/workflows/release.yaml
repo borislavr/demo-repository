@@ -39,6 +39,8 @@ jobs:
           echo "Version [out]: ${{ needs.release.outputs.version }}"
 
   github-release:
+    permissions:
+      contents: write
     uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
     with:
       version: ${{ github.event.inputs.version }}
