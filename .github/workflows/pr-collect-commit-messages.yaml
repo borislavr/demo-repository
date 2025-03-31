@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: "Update PR body"
         if: ${{ github.event.pull_request.base.repo.id == github.event.pull_request.head.repo.id }}
-        uses: ./.github/actions/pr-add-messages@main
+        uses: borislavr/demo-repository/.github/actions/pr-add-messages@main
       - name: "Warning"
         if: ${{ github.event.pull_request.base.repo.id == github.event.pull_request.head.repo.id }}
         run: |
