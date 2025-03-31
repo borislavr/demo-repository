@@ -37,3 +37,9 @@ jobs:
         run: |
           echo "Version [env]: ${env.version}"
           echo "Version [out]: ${{ needs.release.outputs.version }}"
+
+  github-release:
+    uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
+    with:
+      version: ${{ github.event.inputs.version }}
+      publish: true
