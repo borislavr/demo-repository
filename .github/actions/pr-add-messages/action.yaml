@@ -53,7 +53,8 @@ runs:
           # Collect messages from all commits
           messages = []
           for commit in commits_data:
-              messages.append(f"[{commit['author']['login']}]({commit['html_url']}) {commit['commit']['message']}")
+              # messages.append(f"[{commit['author']['login']}]({commit['html_url']}) {commit['commit']['message']}")
+              messages.append(f"<a href={commit['html_url']}>{commit['author']['login']}:</a> {commit['commit']['message']}\n")
         except Exception as e:
           print(f"Error: {e}")
           messages = [] # No commit messages found
