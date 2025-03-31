@@ -29,16 +29,11 @@ jobs:
             echo "version=${{ github.event.inputs.version }}" >> $GITHUB_ENV
             echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
           fi
-  info:
-    runs-on: ubuntu-latest
-    needs: release
-    steps:
-      - name: "Info"
-        run: |
-          echo "Version [env]: ${env.version}"
-          echo "Version [out]: ${{ needs.release.outputs.version }}"
 
   github-release:
+    permissions:
+      contents: write
+      actions: write
     uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
     with:
       version: ${{ github.event.inputs.version }}
