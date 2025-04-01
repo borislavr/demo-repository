@@ -15,10 +15,6 @@ jobs:
   generate-sbom:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - name: "Set RELEASE_VERSION"
         id: set-version
         run: |
@@ -27,6 +23,10 @@ jobs:
           else
             echo "RELEASE_VERSION=${{ github.event.inputs.release-tag }}" >> $GITHUB_ENV
           fi
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.RELEASE_VERSION }}
       - name: "Free some space"
         run: rm -rf /opt/hostedtoolcache
         shell: bash
