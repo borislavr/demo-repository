@@ -38,6 +38,6 @@ jobs:
       - name: Upload SBOM file to GitHub Release
         uses: AButler/upload-release-assets@v3.0
         with:
-          files: "${GITHUB_WORKSPACE}/${{ github.event.repository.name }}_sbom.v${{ env.RELEASE_VERSION }}.json"
+          files: "${GITHUB_WORKSPACE}/${{ github.event.repository.name }}_sbom.${{ env.RELEASE_VERSION }}.json"
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{ env.RELEASE_VERSION }}
