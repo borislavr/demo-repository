@@ -1,0 +1,23 @@
+name: Test permissions
+permissions:
+  contents: read
+on:
+  workflow_dispatch
+jobs:
+  write-to-other-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: actions/checkout@v4
+        with:
+          repository: borislavr/permissions-test
+          ref: main
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+      - name: Make some changes
+        run: |
+          mkdir -p test
+          echo "${{ github.repository }} - ${{ github.workflow.run_number }}" >> ./test/log.txt
+          git config --global user.email "tech@qubership.com"
+          git config --global user.name "tech"
+          git add .
+          git commit -m "chore: update log"
+          git push -u origin main
