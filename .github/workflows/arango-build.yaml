@@ -1,0 +1,24 @@
+name: ArangoDB buld
+
+on:
+  workflow_dispatch:
+    inputs:
+      arango-version:
+        type: string
+        default: '3.11.14'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: 'arangodb/oskar'
+          ref: arangodb-${{ inputs.arango-version }}
+      - run: |
+          sudo apt-get install -y fish
+          fish
+          source helper.fish
+          checkoutArangoDB
+          community
+          buildStaticArangoDB
+  
