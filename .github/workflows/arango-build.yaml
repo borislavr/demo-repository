@@ -17,5 +17,5 @@ jobs:
       - shell: bash
         run: |      
           sudo apt-get install -y fish
-          fish -c "source helper.fish and checkoutArangoDB and community and buildStaticArangoDB"
+          fish -c "source helper.fish; and checkoutArangoDB; and community; and buildStaticArangoDB"
   
