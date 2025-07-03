@@ -14,11 +14,8 @@ jobs:
         with:
           repository: 'arangodb/oskar'
           ref: arangodb-${{ inputs.arango-version }}
-      - run: |
+      - shell: bash
+        run: |      
           sudo apt-get install -y fish
-          fish
-          source helper.fish
-          checkoutArangoDB
-          community
-          buildStaticArangoDB
+          fish -c "source helper.fish and checkoutArangoDB and community and buildStaticArangoDB"
   
