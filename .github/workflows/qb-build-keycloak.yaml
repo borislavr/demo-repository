@@ -89,7 +89,7 @@ jobs:
         uses: netcracker/qubership-workflow-hub/actions/assets-action@main
         with:
           tag: ${{ inputs.tag }}
-          item-path: keycloak-src/quarkus/dist/target/keycloak-*.tar.gz
+          item-path: ./quarkus/dist/target/keycloak-*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
