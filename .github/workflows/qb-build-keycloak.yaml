@@ -108,7 +108,7 @@ jobs:
         run: echo "repo_owner_lc=$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Debug tag
-        run: echo "ghcr.io/${{ env.repo_owner_lc }}/keycloak:${{ env.keycloak_version }}"
+        run: echo "ghcr.io/${{ env.repo_owner_lc }}/${{ github.event.repository.name }}:${{ env.keycloak_version }}"
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
@@ -120,6 +120,6 @@ jobs:
             KEYCLOAK_DIST=${{ env.keycloak_tar }}
           push: "true"
           tags: |
-            ghcr.io/${{ env.repo_owner_lc }}/keycloak:${{ env.keycloak_version }}
+            ghcr.io/${{ env.repo_owner_lc }}/${{ github.event.repository.name }}:${{ env.keycloak_version }}
           platforms: linux/amd64
           github-token: ${{ secrets.GITHUB_TOKEN }}
