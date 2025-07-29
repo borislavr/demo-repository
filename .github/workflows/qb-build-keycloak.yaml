@@ -27,10 +27,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Keycloak source code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.keycloak-tag }}
+          repository: keycloak/keycloak
       - name: Checkout this repository
         uses: actions/checkout@v4
         with:
-          path: /tmp/keycloak-patches
+          path: ./keycloak-patches
 
       - name: Create a New Tag
         run: |
@@ -38,7 +43,7 @@ jobs:
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
           echo "Creating tag ${{ inputs.tag }}"
-          cd /tmp/keycloak-patches
+          cd ./keycloak-patches
           git fetch --tags origin
           if git rev-parse ${{ inputs.tag }} >/dev/null 2>&1; then
             if [ "${{ inputs.forceCreate }}" = "true" ]; then
@@ -57,20 +62,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout Keycloak source code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.keycloak-tag }}
-          repository: keycloak/keycloak
-
       - name: Apply patches
         run: |
           cd ${GITHUB_WORKSPACE}
-          for p in /tmp/keycloak-patches/keycloak-patches/${{ inputs.keycloak-tag }}/*.patch; do
+          for p in ./keycloak-patches/keycloak-patches/${{ inputs.keycloak-tag }}/*.patch; do
             echo "Applying $p…"
             git apply -p1 --ignore-space-change --ignore-whitespace "$p"
           done
-          rm -rf /tmp/keycloak-patches
+          rm -rf ./keycloak-patches
 
       - name: Set up Maven
         uses: stCarolas/setup-maven@v5
