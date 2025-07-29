@@ -30,18 +30,15 @@ jobs:
       contents: write
       packages: write
     steps:
-      - name: Checkout this repository
-        uses: actions/checkout@v4
-
       - name: Create a New Tag
-        uses: borislavr/qubership-workflow-hub/actions/tag-action@main
+        uses: netcracker/qubership-workflow-hub/actions/tag-action@main
         with:
           ref: ${{ github.ref_name }}
           tag-name: ${{ inputs.tag }}
           force-create: ${{ inputs.forceCreate }}
           switch-to-tag: true
           create-release: true
-          skip-checkout: true
+          skip-checkout: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Clean up
