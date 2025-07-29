@@ -26,7 +26,29 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+        with:
+          path: ./keycloak-patches
+
+      - name: Create a New Tag
+        uses: netcracker/qubership-workflow-hub/actions/tag-action@main
+        with:
+          ref: ${{ github.ref_name }}
+          tag-name: ${{ inputs.tag }}
+          force-create: ${{ inputs.forceCreate }}
+          switch-to-tag: true
+          create-release: true
+          skip-checkout: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Clean up
+        run: |
+          rm -rf ./
       - name: Checkout Keycloak source code
         uses: actions/checkout@v4
         with:
@@ -36,33 +58,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: ./keycloak-patches
-
-      - name: Create a New Tag
-        run: |
-          echo "Configuring git user for tagging"
-          git config --global user.name "${{ github.actor }}"
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          echo "Creating tag ${{ inputs.tag }}"
-          cd ./keycloak-patches
-          git fetch --tags origin
-          if git rev-parse ${{ inputs.tag }} >/dev/null 2>&1; then
-            if [ "${{ inputs.forceCreate }}" = "true" ]; then
-              echo "Tag ${{ inputs.tag }} already exists, but forceCreate is true. Replacing it."
-              git tag -d "${{ inputs.tag }}"
-              git push origin --delete "${{ inputs.tag }}"
-            else
-              echo "Tag ${{ inputs.tag }} already exists. Exiting."
-              exit 0
-            fi
-          fi
-          git tag ${{ inputs.tag }}
-          echo "Pushing tag ${{ inputs.tag }} to origin"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git fetch origin
-          git push origin ${{ inputs.tag }} --force
-          echo "Tag ${{ inputs.tag }} created and pushed successfully"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ inputs.tag }}
 
       - name: Apply patches
         run: |
