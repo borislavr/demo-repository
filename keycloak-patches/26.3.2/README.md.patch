@@ -1,0 +1,10 @@
+diff --git a/quarkus/README.md b/quarkus/README.md
+index a3466111d0..d55a252943 100644
+--- a/quarkus/README.md
++++ b/quarkus/README.md
+@@ -128,3 +128,5 @@ Changing to the help output will cause HelpCommandDistTest to fail. You may use:
+     KEYCLOAK_REPLACE_EXPECTED=true ../mvnw clean install -Dtest=HelpCommandDistTest
+
+ to replace the expected output, then use a diff to ensure the changes look good.
++
++changes madefor the patching test
