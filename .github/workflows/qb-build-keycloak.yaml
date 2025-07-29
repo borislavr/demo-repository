@@ -48,6 +48,8 @@ jobs:
           if git rev-parse ${{ inputs.tag }} >/dev/null 2>&1; then
             if [ "${{ inputs.forceCreate }}" = "true" ]; then
               echo "Tag ${{ inputs.tag }} already exists, but forceCreate is true. Replacing it."
+              git tag -d "${{ inputs.tag }}"
+              git push origin --delete "${{ inputs.tag }}"
             else
               echo "Tag ${{ inputs.tag }} already exists. Exiting."
               exit 0
