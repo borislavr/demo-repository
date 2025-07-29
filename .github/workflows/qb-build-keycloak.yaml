@@ -32,8 +32,6 @@ jobs:
     steps:
       - name: Checkout this repository
         uses: actions/checkout@v4
-        with:
-          path: ./keycloak-patches
 
       - name: Create a New Tag
         uses: netcracker/qubership-workflow-hub/actions/tag-action@main
