@@ -33,7 +33,7 @@ jobs:
           EOF
           sudo add-apt-repository ppa:rabbitmq/rabbitmq-erlang
           sudo apt-get update
-          sudo apt-get install -y git elixir erlang erlang-nox erlang-dev erlang-src xmlto
+          sudo apt-get install -y git elixir erlang erlang-nox erlang-dev erlang-src xmlto build-essential debhelper esl-erlang
           sudo snap install libxslt
       - name: "Build RabbitMQ"
         run: |
