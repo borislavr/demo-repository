@@ -28,12 +28,12 @@ jobs:
           EOF
           sudo apt-get install -y git elixir erlang erlang-nox erlang-dev erlang-src xmlto
           sudo snap install libxslt
-      - name: "Install dependencies"
-        run: |
-          make deps
       - name: "Build RabbitMQ"
         run: |
           make
+      - name: "Build RabbitMQ package"
+        run: |
+          make make package-deb
       - name: "Upload RabbitMQ build artifacts"
         uses: actions/upload-artifact@v4
         with:
