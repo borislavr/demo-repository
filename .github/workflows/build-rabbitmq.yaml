@@ -1,27 +1,67 @@
 name: "Build RabbitMQ"
-run-name: "RabbitMQ version ${{ inputs.rabbitmq-version }}"
+run-name: "RabbitMQ version ${{ inputs.rabbitmq-tag }}"
 on:
   workflow_dispatch:
     inputs:
-      rabbitmq-version:
+      rabbitmq-tag:
         description: "RabbitMQ version to build"
         required: true
         default: "v4.1.2"
-      rabbitmq-packaging-version:
-        description: "RabbitMQ packaging version"
+      tag:
+        description: "Tag to create for accets upload"
         required: true
-        default: "v4.0.3"
+        default: "v4.1.2-patched"
+      forceCreate:
+        type: boolean
+        description: "Override tag name (default: true)"
+        required: false
+        default: true
 permissions:
-  contents: read
+  contents: write
 jobs:
   build-rabbitmq:
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout code"
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.rabbitmq-version }}
+          fetch-depth: 0
+
+      - name: Create a New Tag
+        uses: netcracker/qubership-workflow-hub/actions/tag-action@main
+        with:
+          ref: ${{ github.ref_name }}
+          tag-name: ${{ inputs.tag }}
+          force-create: ${{ inputs.forceCreate }}
+          switch-to-tag: true
+          create-release: true
+          skip-checkout: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup
+        run: |
+          rm -rf ./*
+      - name: "Checkout RabbitMQ tag ${{ github.event.inputs.rabbitmq-tag }}"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rabbitmq-tag }}
           repository: "rabbitmq/rabbitmq-server"
+
+      - name: Checkout rabbitmq-patches tag ${{ inputs.tag }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+          path: rabbitmq-patches
+
+      - name: Apply patches
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          for p in .rabbitmq-patches/rabbitmq-patches/${{ inputs.kafka-tag }}/*.patch; do
+            echo "Applying $p…"
+            git apply -p1 --ignore-space-change --ignore-whitespace "$p"
+          done
+          rm -rf ./rabbitmq-patches
       - name: "Install pre-requisites"
         run: |
           sudo apt-get update
@@ -42,12 +82,12 @@ jobs:
       - name: "Build RabbitMQ"
         run: |
           make
-      - name: "Checkout rabbitmq/rabbitmq-packaging"
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.rabbitmq-packaging-version }}
-          repository: "rabbitmq/rabbitmq-packaging"
-          path: rappitmq-packaging
+#      - name: "Checkout rabbitmq/rabbitmq-packaging"
+#        uses: actions/checkout@v4
+#        with:
+#          ref: ${{ github.event.inputs.rabbitmq-packaging-version }}
+#          repository: "rabbitmq/rabbitmq-packaging"
+#          path: rappitmq-packaging
 #      - name: "Build RabbitMQ package"
 #        run: |
 #          make package-deb
