@@ -1,0 +1,35 @@
+name: "Build RabbitMQ"
+on:
+  workflow_dispatch:
+    inputs:
+      rabbitmq-version:
+        description: "RabbitMQ version to build"
+        required: true
+        default: "v4.1.2"
+permissions:
+  contents: read
+jobs:
+  build-rabbitmq:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rabbitmq-version }}
+          repository: "rabbitmq/rabbitmq-server"
+      - name: "Install pre-requisites"
+        run: |
+          sudo apt update
+          sudo apt install -y git elixir erlang erlang-nox erlang-dev erlang-src xmlto
+          sudo snap install -y libxslt
+      - name: "Install dependencies"
+        run: |
+          make deps
+      - name: "Build RabbitMQ"
+        run: |
+          make
+      - name: "Upload RabbitMQ build artifacts"
+        uses: actions/upload-artifact@v4
+        with:
+          name: rabbitmq-build
+          path: "rabbitmq-server/ebin/*"
