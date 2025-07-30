@@ -81,7 +81,7 @@ jobs:
           sudo snap install libxslt
       - name: "Build RabbitMQ"
         run: |
-          make
+          # make
           make package-generic-unix PROJECT_VERSION=${{ env.VERSION }}
         env:
           VERSION: ${{ inputs.rabbitmq-tag }}
