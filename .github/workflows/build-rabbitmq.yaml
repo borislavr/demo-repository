@@ -6,6 +6,10 @@ on:
         description: "RabbitMQ version to build"
         required: true
         default: "v4.1.2"
+      rabbitmq-packaging-version:
+        description: "RabbitMQ packaging version"
+        required: true
+        default: "v4.0.3"
 permissions:
   contents: read
 jobs:
@@ -33,9 +37,17 @@ jobs:
       - name: "Build RabbitMQ"
         run: |
           make
+      - name: "Checkout rabbitmq/rabbitmq-packaging"
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rabbitmq-packaging-version }}
+          repository: "rabbitmq/rabbitmq-packaging"
+          path: rappitmq-packaging
       - name: "Build RabbitMQ package"
         run: |
-          make make package-deb
+          make package-deb
+        env:
+          RABBITMQ_PACKAGING_REPO: ./rappitmq-packaging
       - name: "Upload RabbitMQ build artifacts"
         uses: actions/upload-artifact@v4
         with:
