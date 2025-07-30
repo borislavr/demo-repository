@@ -106,6 +106,6 @@ jobs:
         uses: netcracker/qubership-workflow-hub/actions/assets-action@main
         with:
           tag: ${{ inputs.tag }}
-          item-path: PACKAGES/**/*
+          item-path: PACKAGES/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
