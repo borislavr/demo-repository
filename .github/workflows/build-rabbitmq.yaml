@@ -92,9 +92,17 @@ jobs:
 #        run: |
 #          make package-deb
 #        env:
-#          RABBITMQ_PACKAGING_REPO: ./rappitmq-packaging
+#          RABBITMQ_PACKAGING_REPO: ./rabbitmq-packaging
       - name: "Upload RabbitMQ build artifacts"
         uses: actions/upload-artifact@v4
         with:
           name: rabbitmq-build
           path: "rabbitmq-server/ebin/*"
+
+      - name: "Upload assets"
+        uses: netcracker/qubership-workflow-hub/actions/assets-action@main
+        with:
+          tag: ${{ inputs.tag }}
+          item-path: PACKAGES/**/*.*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
