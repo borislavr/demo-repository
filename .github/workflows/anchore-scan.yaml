@@ -19,7 +19,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 ############## Image scan ###################################
-      - name: Scan image
+      - name: Anchore Scan image
         if: inputs.image
         uses: anchore/scan-action@v6
         id: scan-image
@@ -33,6 +33,11 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan-image.outputs.sarif }}
+      - name: xEOL Scan image
+        if: inputs.image
+        uses: xeol-io/xeol-action@v1.0.7
+        with:
+          image: "${{ inputs.image }}"
 ###############################################################
 
 ############## Project scan ###################################
