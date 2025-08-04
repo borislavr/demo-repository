@@ -1,0 +1,37 @@
+name: "Docker Scout report"
+on:
+  workflow_dispatch:
+    inputs:
+      image:
+        type: string
+        required: true
+        default: ''
+permissions:
+  contents: read
+jobs:
+  report:
+    permissions:
+      contents: read
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Analyze for critical and high CVEs
+        id: docker-scout-cves
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: docker/scout-action@v1
+        with:
+          command: cves,recommendations
+          image: ${{ inputs.image }}
+          sarif-file: sarif.output.json
+          summary: true
+          ignore-base: false
+          dockerhub-user: ${{ secrets.DOCKER_IO_USER }}
+          dockerhub-password: ${{ secrets.DOCKER_IO_PASSWORD }}
+          continue-on-error: true
+
+      - name: Upload SARIF result
+        id: upload-sarif
+        if: ${{ github.event_name != 'pull_request_target' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: sarif.output.json
