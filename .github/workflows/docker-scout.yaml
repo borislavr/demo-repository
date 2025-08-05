@@ -19,6 +19,7 @@ jobs:
         id: docker-scout-cves
         if: ${{ github.event_name != 'pull_request_target' }}
         uses: docker/scout-action@v1
+        continue-on-error: true
         with:
           command: cves,recommendations
           image: ${{ inputs.image }}
@@ -27,7 +28,6 @@ jobs:
           ignore-base: false
           dockerhub-user: ${{ secrets.DOCKER_IO_USER }}
           dockerhub-password: ${{ secrets.DOCKER_IO_PASSWORD }}
-          continue-on-error: true
 
       - name: Upload SARIF result
         id: upload-sarif
@@ -39,4 +39,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: sarif.output.json
+          name: SARIF
           
