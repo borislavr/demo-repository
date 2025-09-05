@@ -1,0 +1,20 @@
+name: cert-manager-build
+on:
+  workflow_dispatch: {}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          repository: cert-manager/cert-manager
+      - name: preparation
+        run: |
+          make vendor-go
+      - name: build
+        run: |
+          make GOMAXPROCS=2 -j4 release-artifacts
+      - name: test
+        run: |
+          make unit-test
