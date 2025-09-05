@@ -14,7 +14,15 @@ jobs:
           make vendor-go
       - name: build
         run: |
-          make GOMAXPROCS=2 -j4 release-artifacts
+          # Build just the controller containers on every architecture
+          make cert-manager-controller-linux
+          make cert-manager-webhook-linux
+          make cert-manager-cainjector-linux
+          make cert-manager-acmesolver-linux
+          make cert-manager-ctl-linux
+          make helm-chart
+          make static-manifests
+          #make GOMAXPROCS=2 -j4 release-artifacts
       - name: test
         run: |
           make unit-test
