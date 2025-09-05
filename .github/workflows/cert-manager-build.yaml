@@ -13,6 +13,7 @@ jobs:
       - name: preparation
         run: |
           make vendor-go
+          make go-workspace
       - name: build
         run: |
           # Build just the controller containers on every architecture
