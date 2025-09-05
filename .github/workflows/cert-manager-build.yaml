@@ -21,7 +21,7 @@ jobs:
           make cert-manager-webhook-linux
           make cert-manager-cainjector-linux
           make cert-manager-acmesolver-linux
-          make cert-manager-ctl-linux
+          #make cert-manager-ctl-linux
           make helm-chart
           make static-manifests
           #make GOMAXPROCS=2 -j4 release-artifacts
