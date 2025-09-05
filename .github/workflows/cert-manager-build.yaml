@@ -35,3 +35,10 @@ jobs:
       - name: test
         run: |
           make unit-test
+      - name: upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cert-manager
+          path: _bin/**/*.tar.gz
+        
+      
